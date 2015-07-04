@@ -544,6 +544,7 @@ const char CameraParameters::SCENE_MODE_DAWN[] = "dusk-dawn";
 const char CameraParameters::SCENE_MODE_DUSKDAWN[] = "dusk-dawn";
 const char CameraParameters::SCENE_MODE_FALL[] = "fall-color";
 const char CameraParameters::SCENE_MODE_FALL_COLOR[] = "fall-color";
+const char CameraParameters::SCENE_MODE_OFF[] = "off";
 const char CameraParameters::SCENE_MODE_TEXT[] = "text";
 #endif
 
