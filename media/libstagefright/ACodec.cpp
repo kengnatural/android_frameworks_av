@@ -611,7 +611,7 @@ status_t ACodec::configureOutputBuffersFromNativeWindow(
         return err;
     }
 
-#ifdef USE_SAMSUNG_COLORFORMAT
+#if defined(USE_SAMSUNG_COLORFORMAT) || defined(QCOM_LEGACY_OMX)
     OMX_COLOR_FORMATTYPE eNativeColorFormat = def.format.video.eColorFormat;
     setNativeWindowColorFormat(eNativeColorFormat);
 
@@ -905,7 +905,7 @@ status_t ACodec::submitOutputMetaDataBuffer() {
     return OK;
 }
 
-#ifdef USE_SAMSUNG_COLORFORMAT
+#if defined(USE_SAMSUNG_COLORFORMAT)
 void ACodec::setNativeWindowColorFormat(OMX_COLOR_FORMATTYPE &eNativeColorFormat)
 {
     // In case of Samsung decoders, we set proper native color format for the Native Window
@@ -920,6 +920,14 @@ void ACodec::setNativeWindowColorFormat(OMX_COLOR_FORMATTYPE &eNativeColorFormat
                 eNativeColorFormat = (OMX_COLOR_FORMATTYPE)HAL_PIXEL_FORMAT_YCbCr_420_P;
                 break;
         }
+    }
+}
+#elif defined(QCOM_LEGACY_OMX)
+void ACodec::setNativeWindowColorFormat(OMX_COLOR_FORMATTYPE &eNativeColorFormat)
+{
+    if (!strncmp(mComponentName.c_str(), "OMX.qcom.", 9)) {
+        if (eNativeColorFormat == OMX_QCOM_COLOR_FormatYVU420SemiPlanar)
+            eNativeColorFormat = (OMX_COLOR_FORMATTYPE)HAL_PIXEL_FORMAT_YCrCb_420_SP;
     }
 }
 #endif
