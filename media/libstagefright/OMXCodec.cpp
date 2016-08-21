@@ -6366,6 +6366,8 @@ status_t QueryCodec(
         if (err != OK) {
             break;
         }
+        if (index != portFormat.nIndex)
+		break;
         caps->mColorFormats.push(portFormat.eColorFormat);
     }
 
