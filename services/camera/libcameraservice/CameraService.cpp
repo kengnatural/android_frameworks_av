@@ -223,7 +223,7 @@ status_t CameraService::getCameraInfo(int cameraId,
     struct camera_info info;
     status_t rc = mModule->get_camera_info(cameraId, &info);
     cameraInfo->facing = info.facing;
-    cameraInfo->orientation = info.orientation;
+    cameraInfo->orientation = (cameraId == 0) ? 90 : info.orientation;
     return rc;
 }
 
