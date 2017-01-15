@@ -60,6 +60,13 @@
 #define ROUND_16(X)     ((X + 0xF) & (~0xF))
 #endif
 
+// OMX Spec defines less than 50 color formats. If the query for
+// color format is executed for more than kMaxColorFormatSupported,
+// the query will fail to avoid looping forever.
+// 1000 is more than enough for us to tell whether the omx
+// component in question is buggy or not.
+const static uint32_t kMaxColorFormatSupported = 1000;
+
 namespace android {
 
 template<class T>
@@ -1878,6 +1885,11 @@ status_t ACodec::setVideoPortFormatType(
         }
 
         ++index;
+        if (index >= kMaxColorFormatSupported)
+        {
+            ALOGE("ACodec.cpp:1890: Max color index reached");
+            break;
+        }
     }
 
     if (!found) {

@@ -1842,6 +1842,11 @@ status_t OMXCodec::setVideoOutputFormat(
 
             while (OMX_ErrorNoMore != err) {
                 format.nIndex++;
+                if (format.nIndex >= kMaxColorFormatSupported)
+                {
+                    CODEC_LOGE("1847: Max index reached. Color format %d is not supported", colorFormat);
+                    return ERROR_UNSUPPORTED;
+                }
                 err = mOMX->getParameter(
                         mNode, OMX_IndexParamVideoPortFormat,
                             &format, sizeof(format));
@@ -6358,7 +6363,14 @@ status_t QueryCodec(
 #else
     portFormat.nPortIndex = !isEncoder ? 1 : 0;
 #endif
-    for (OMX_U32 index = 0;;index++) {
+    for (OMX_U32 index = 0;; index++) {
+
+        if (index >= kMaxColorFormatSupported)
+        {
+            ALOGE("6372: Max index reached. No remaining color format");
+            break;
+        }
+
         portFormat.nIndex = index;
         err = omx->getParameter(
                 node, OMX_IndexParamVideoPortFormat,
@@ -6366,8 +6378,6 @@ status_t QueryCodec(
         if (err != OK) {
             break;
         }
-        if (index != portFormat.nIndex)
-		break;
         caps->mColorFormats.push(portFormat.eColorFormat);
     }
 
